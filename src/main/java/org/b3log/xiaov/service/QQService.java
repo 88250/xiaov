@@ -15,13 +15,12 @@
  */
 package org.b3log.xiaov.service;
 
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import com.scienjus.smartqq.callback.MessageCallback;
+import com.scienjus.smartqq.client.SmartQQClient;
+import com.scienjus.smartqq.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.RandomUtils;
+import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.service.annotation.Service;
@@ -32,28 +31,21 @@ import org.b3log.latke.urlfetch.URLFetchService;
 import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.latke.util.Strings;
 import org.b3log.xiaov.util.XiaoVs;
-import com.scienjus.smartqq.callback.MessageCallback;
-import com.scienjus.smartqq.client.SmartQQClient;
-import com.scienjus.smartqq.model.Discuss;
-import com.scienjus.smartqq.model.DiscussMessage;
-import com.scienjus.smartqq.model.Group;
-import com.scienjus.smartqq.model.GroupInfo;
-import com.scienjus.smartqq.model.GroupMessage;
-import com.scienjus.smartqq.model.Message;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import org.apache.commons.lang.math.RandomUtils;
 
 /**
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.3.9, Aug 28, 2016
+ * @version 1.4.3.10, Oct 31, 2017
  * @since 1.0.0
  */
 @Service
@@ -62,32 +54,28 @@ public class QQService {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(QQService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(QQService.class);
 
     /**
      * QQ groups.
-     *
      * &lt;groupId, group&gt;
      */
     private final Map<Long, Group> QQ_GROUPS = new ConcurrentHashMap<>();
 
     /**
      * The latest group ad time.
-     *
      * &lt;groupId, time&gt;
      */
     private final Map<Long, Long> GROUP_AD_TIME = new ConcurrentHashMap<>();
 
     /**
      * QQ discusses.
-     *
      * &lt;discussId, discuss&gt;
      */
     private final Map<Long, Discuss> QQ_DISCUSSES = new ConcurrentHashMap<>();
 
     /**
      * The latest discuss ad time.
-     *
      * &lt;discussId, time&gt;
      */
     private final Map<Long, Long> DISCUSS_AD_TIME = new ConcurrentHashMap<>();
@@ -228,32 +216,26 @@ public class QQService {
 
             @Override
             public void onGroupMessage(final GroupMessage message) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500 + RandomUtils.nextInt(1000));
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500 + RandomUtils.nextInt(1000));
 
-                            onQQGroupMessage(message);
-                        } catch (final Exception e) {
-                            LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
-                        }
+                        onQQGroupMessage(message);
+                    } catch (final Exception e) {
+                        LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
                     }
                 }).start();
             }
 
             @Override
             public void onDiscussMessage(final DiscussMessage message) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500 + RandomUtils.nextInt(1000));
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500 + RandomUtils.nextInt(1000));
 
-                            onQQDiscussMessage(message);
-                        } catch (final Exception e) {
-                            LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
-                        }
+                        onQQDiscussMessage(message);
+                    } catch (final Exception e) {
+                        LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
                     }
                 }).start();
             }
@@ -377,8 +359,8 @@ public class QQService {
                 }
 
                 for (final Map.Entry<Long, Group> entry : QQ_GROUPS.entrySet()) {
-                    long groupId = 0;
-                    int userCount = 0;
+                    long groupId;
+                    int userCount;
 
                     try {
                         final Group group = entry.getValue();
@@ -553,7 +535,7 @@ public class QQService {
         }
     }
 
-    public void onQQGroupMessage(final GroupMessage message) {
+    private void onQQGroupMessage(final GroupMessage message) {
         final long groupId = message.getGroupId();
 
         final String content = message.getContent();
@@ -594,7 +576,7 @@ public class QQService {
         sendMessageToGroup(groupId, msg);
     }
 
-    public void onQQDiscussMessage(final DiscussMessage message) {
+    private void onQQDiscussMessage(final DiscussMessage message) {
         final long discussId = message.getDiscussId();
 
         final String content = message.getContent();

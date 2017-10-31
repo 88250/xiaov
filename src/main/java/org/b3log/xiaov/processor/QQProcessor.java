@@ -15,11 +15,9 @@
  */
 package org.b3log.xiaov.processor;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
+import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.servlet.HTTPRequestContext;
 import org.b3log.latke.servlet.HTTPRequestMethod;
@@ -29,15 +27,17 @@ import org.b3log.xiaov.service.QQService;
 import org.b3log.xiaov.util.XiaoVs;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * QQ processor.
- *
  * <ul>
  * <li>Handles QQ message (/qq), POST</li>
  * </ul>
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.2.3, Aug 26, 2016
+ * @version 1.0.2.4, Oct 31, 2017
  * @since 1.0.0
  */
 @RequestProcessor
@@ -57,14 +57,13 @@ public class QQProcessor {
     /**
      * Handles QQ message.
      *
-     * @param context the specified context
-     * @param request the specified request
+     * @param context  the specified context
+     * @param request  the specified request
      * @param response the specified response
      * @throws Exception exception
      */
     @RequestProcessing(value = "/qq", method = HTTPRequestMethod.POST)
-    public void qq(final HTTPRequestContext context,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+    public void qq(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         final String key = XiaoVs.getString("qq.bot.key");
         if (!key.equals(request.getParameter("key"))) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
