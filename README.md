@@ -59,7 +59,7 @@
 
 ## 启动
 
-1. 安装好 Java 1.7+、Maven 2+
+1. 安装好 **JDK1.8**、Maven 3
 2. Clone 本项目，并在项目根目录上执行 `mvn install`
 3. 使用 `mvn jetty:run` 启动，或者在 target/xiaov 目录下执行命令：
    * Windows: `java -cp WEB-INF/lib/*;WEB-INF/classes org.b3log.xiaov.Starter`
@@ -121,12 +121,8 @@
 * [茉莉机器人](http://www.itpk.cn)：再再次赋予了小薇抖机灵的能力（据说很污 :joy:）
 * [Latke](https://github.com/b3log/latke)：简洁高效的 Java Web 框架 
 
-----
+## 其他
 
-## 其他教程
-
-如果上面的文档看得一头雾水（作者语文高考差点不及格，见谅），请看**下面**由热心开发者提供的图文并茂、绘声绘色的、认真的教程：
-
-* [小薇聊天机器人用MyEclipse部署上线SOP教程](http://relyn.cn/articles/2016/07/30/1469805716702.html)
-
-
+* [小薇讨论区](https://hacpai.com/tag/xiaov)（没有邀请码可加群 242561391）
+* 你想[搭建一个社区](https://github.com/b3log/symphony)么或者[搭建一个博客](https://github.com/b3log/solo)么？
+* 上面两个项目给颗星再走，谢谢！
