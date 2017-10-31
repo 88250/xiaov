@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Description: XiaoV POM.
-    Version: 1.1.0.11, Nov 3, 2016
+    Version: 1.1.0.12, Oct 31, 2017
     Author: Liang Ding
 -->
 <project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.b3log</groupId>
     <artifactId>xiaov</artifactId>
@@ -16,34 +17,34 @@
     <url>https://github.com/b3log/xiaov</url>
     <description>Yet another QQ Bot. 又一个 QQ 聊天机器人，她的名字叫做小薇~</description>
     <inceptionYear>2016</inceptionYear>
-    
+
     <!-- Properties -->
     <properties>
-        <latke.version>2.3.5</latke.version>
+        <latke.version>2.3.18</latke.version>
         <servlet.version>3.1.0</servlet.version>
         <jetty.version>9.2.7.v20150116</jetty.version>
         <slf4j.version>1.7.7</slf4j.version>
-        
+
         <!-- maven plugin -->
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
-        
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <organization>
         <name>B3log</name>
         <url>http://b3log.org</url>
     </organization>
-    
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
-    
+
     <developers>
         <developer>
             <id>DL88250@gmail.com</id>
@@ -59,16 +60,16 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-    
+
     <issueManagement>
         <system>GitHub Issues</system>
         <url>https://github.com/b3log/xiaov/issues</url>
     </issueManagement>
-    
+
     <scm>
         <url>https://github.com/b3log/xiaov</url>
     </scm>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.b3log</groupId>
@@ -89,51 +90,51 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.23</version>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.7</version>
         </dependency>
-        
+
         <dependency>
             <groupId>net.dongliu</groupId>
             <artifactId>requests</artifactId>
             <version>2.1.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        
+
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>
@@ -143,7 +144,7 @@
                 </excludes>
             </resource>
         </resources>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
@@ -160,7 +161,7 @@
                     </webAppConfig>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -169,7 +170,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -180,7 +181,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
             <!--
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
@@ -227,8 +228,8 @@
             </plugin>
             -->
         </plugins>
-        
+
         <finalName>xiaov</finalName>
     </build>
-    
+
 </project>
