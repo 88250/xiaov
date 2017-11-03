@@ -15,6 +15,7 @@
  */
 package org.b3log.xiaov.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.*;
@@ -45,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.3.10, Oct 31, 2017
+ * @version 1.4.3.11, Nov 3, 2017
  * @since 1.0.0
  */
 @Service
@@ -55,73 +56,6 @@ public class QQService {
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(QQService.class);
-
-    /**
-     * QQ groups.
-     * &lt;groupId, group&gt;
-     */
-    private final Map<Long, Group> QQ_GROUPS = new ConcurrentHashMap<>();
-
-    /**
-     * The latest group ad time.
-     * &lt;groupId, time&gt;
-     */
-    private final Map<Long, Long> GROUP_AD_TIME = new ConcurrentHashMap<>();
-
-    /**
-     * QQ discusses.
-     * &lt;discussId, discuss&gt;
-     */
-    private final Map<Long, Discuss> QQ_DISCUSSES = new ConcurrentHashMap<>();
-
-    /**
-     * The latest discuss ad time.
-     * &lt;discussId, time&gt;
-     */
-    private final Map<Long, Long> DISCUSS_AD_TIME = new ConcurrentHashMap<>();
-
-    /**
-     * 是否启用小薇的守护来进行消息送达确认.
-     */
-    private final boolean MSG_ACK_ENABLED = XiaoVs.getBoolean("qq.bot.ack");
-
-    /**
-     * QQ client.
-     */
-    private SmartQQClient xiaoV;
-
-    /**
-     * QQ client listener.
-     */
-    private SmartQQClient xiaoVListener;
-
-    /**
-     * Group sent messages.
-     */
-    private final List<String> GROUP_SENT_MSGS = new CopyOnWriteArrayList<>();
-
-    /**
-     * Discuss sent messages.
-     */
-    private final List<String> DISCUSS_SENT_MSGS = new CopyOnWriteArrayList<>();
-
-    /**
-     * Turing query service.
-     */
-    @Inject
-    private TuringQueryService turingQueryService;
-
-    /**
-     * Baidu bot query service.
-     */
-    @Inject
-    private BaiduQueryService baiduQueryService;
-
-    /**
-     * ITPK query service.
-     */
-    @Inject
-    private ItpkQueryService itpkQueryService;
 
     /**
      * Bot type.
@@ -154,19 +88,19 @@ public class QQService {
     private static final String NO_LISTENER = "请把我的守护也拉进群，否则会造成大量消息重复（如果已经拉了，那就稍等 10 秒钟，我的守护可能在醒瞌睡 O(∩_∩)O哈哈~）\n\nPS：机器人使用问题请看帖 https://hacpai.com/article/1467011936362";
 
     /**
-     * 超过 {@value #PUSH_GROUP_USER_COUNT} 个成员的群才推送.
-     */
-    private static int PUSH_GROUP_USER_COUNT = XiaoVs.getInt("qq.bot.pushGroupUserCnt");
-
-    /**
      * 记录未群推过的群 id 集合.
      */
     private static final Set<Long> UNPUSH_GROUPS = new CopyOnWriteArraySet<>();
 
     /**
-     * 一次群推操作最多只推送 {@value #PUSH_GROUP_COUNT} 个群（为了尽量保证成功率）.
+     * 一次群推操作最多只推送 5 个群（为了尽量保证成功率）.
      */
     private static final int PUSH_GROUP_COUNT = 5;
+
+    /**
+     * 超过 {@code qq.bot.pushGroupUserCnt} 个成员的群才推送.
+     */
+    private static int PUSH_GROUP_USER_COUNT = XiaoVs.getInt("qq.bot.pushGroupUserCnt");
 
     static {
         String adConf = XiaoVs.getString("ads");
@@ -179,6 +113,62 @@ public class QQService {
         ADS.add(XIAO_V_INTRO);
         ADS.add(XIAO_V_INTRO);
     }
+
+    /**
+     * QQ groups.
+     * &lt;groupId, group&gt;
+     */
+    private final Map<Long, Group> QQ_GROUPS = new ConcurrentHashMap<>();
+    /**
+     * The latest group ad time.
+     * &lt;groupId, time&gt;
+     */
+    private final Map<Long, Long> GROUP_AD_TIME = new ConcurrentHashMap<>();
+    /**
+     * QQ discusses.
+     * &lt;discussId, discuss&gt;
+     */
+    private final Map<Long, Discuss> QQ_DISCUSSES = new ConcurrentHashMap<>();
+    /**
+     * The latest discuss ad time.
+     * &lt;discussId, time&gt;
+     */
+    private final Map<Long, Long> DISCUSS_AD_TIME = new ConcurrentHashMap<>();
+    /**
+     * 是否启用小薇的守护来进行消息送达确认.
+     */
+    private final boolean MSG_ACK_ENABLED = XiaoVs.getBoolean("qq.bot.ack");
+    /**
+     * Group sent messages.
+     */
+    private final List<String> GROUP_SENT_MSGS = new CopyOnWriteArrayList<>();
+    /**
+     * Discuss sent messages.
+     */
+    private final List<String> DISCUSS_SENT_MSGS = new CopyOnWriteArrayList<>();
+    /**
+     * QQ client.
+     */
+    private SmartQQClient xiaoV;
+    /**
+     * QQ client listener.
+     */
+    private SmartQQClient xiaoVListener;
+    /**
+     * Turing query service.
+     */
+    @Inject
+    private TuringQueryService turingQueryService;
+    /**
+     * Baidu bot query service.
+     */
+    @Inject
+    private BaiduQueryService baiduQueryService;
+    /**
+     * ITPK query service.
+     */
+    @Inject
+    private ItpkQueryService itpkQueryService;
 
     /**
      * Initializes QQ client.
@@ -649,6 +639,46 @@ public class QQService {
                 ret = baiduQueryService.chat(content);
             } else if (3 == QQ_BOT_TYPE) {
                 ret = itpkQueryService.chat(content);
+                // 如果是茉莉机器人，则将灵签结果格式化输出
+                JSONObject parseMsg;
+                if (ret.indexOf("\\u8d22\\u795e\\u7237\\u7075\\u7b7e") > 0) {
+                    // 财神爷灵签
+                    parseMsg = JSONObject.parseObject(ret);
+
+                    ret = "";
+                    ret += "第" + parseMsg.getString("number2") + "签\r\n\r\n";
+                    ret += "签语: " + parseMsg.getString("qianyu") + "\r\n";
+                    ret += "注释: " + parseMsg.getString("zhushi") + "\r\n";
+                    ret += "解签: " + parseMsg.getString("jieqian") + "\r\n";
+                    ret += "解说: " + parseMsg.getString("jieshuo") + "\r\n\r\n";
+                    ret += "婚姻: " + parseMsg.getString("hunyin") + "\r\n";
+                    ret += "事业: " + parseMsg.getString("shiye") + "\r\n";
+                    ret += "运途: " + parseMsg.getString("yuntu");
+                    ret = ret.replace("null", "无");
+                } else if (ret.indexOf("\\u6708\\u8001\\u7075\\u7b7e") > 0) {
+                    // 观音灵签
+                    parseMsg = JSONObject.parseObject(ret);
+
+                    ret = "";
+                    ret += "第" + parseMsg.getString("number2") + "签\r\n\r\n";
+                    ret += "签位: " + parseMsg.getString("haohua") + "\r\n";
+                    ret += "签语: " + parseMsg.getString("qianyu") + "\r\n";
+                    ret += "诗意: " + parseMsg.getString("shiyi") + "\r\n";
+                    ret += "解签: " + parseMsg.getString("jieqian");
+                    ret = ret.replace("null", "无");
+                } else if (ret.indexOf("\\u89c2\\u97f3\\u7075\\u7b7e") > 0) {
+                    // 月老灵签
+                    parseMsg = JSONObject.parseObject(ret);
+
+                    ret = "";
+                    ret += "第" + parseMsg.getString("number2") + "签\r\n\r\n";
+                    ret += "签位: " + parseMsg.getString("haohua") + "\r\n";
+                    ret += "签语: " + parseMsg.getString("qianyu") + "\r\n";
+                    ret += "注释: " + parseMsg.getString("zhushi") + "\r\n";
+                    ret += "解签: " + parseMsg.getString("jieqian") + "\r\n";
+                    ret += "白话释义: " + parseMsg.getString("baihua");
+                    ret = ret.replace("null", "无");
+                }
             }
 
             if (StringUtils.isBlank(ret)) {
