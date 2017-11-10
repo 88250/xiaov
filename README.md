@@ -123,6 +123,6 @@
 
 ## 其他
 
-* [小薇讨论区](https://hacpai.com/tag/xiaov)（没有邀请码可加群 242561391）
+* [小薇讨论区](https://hacpai.com/tag/xiaov)（没有邀请码可加 Q 群 242561391）
 * 你想[搭建一个社区](https://github.com/b3log/symphony)么或者[搭建一个博客](https://github.com/b3log/solo)么？
 * 上面两个项目给颗星再走，谢谢！
