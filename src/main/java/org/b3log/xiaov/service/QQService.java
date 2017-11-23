@@ -78,16 +78,6 @@ public class QQService {
     private static final String XIAO_V_INTRO = "关于我的更多资料请看帖 https://hacpai.com/article/1467011936362";
 
     /**
-     * XiaoV listener self intro.
-     */
-    private static final String XIAO_V_LISTENER_INTRO = "关于我的更多资料请看帖 https://hacpai.com/article/1467011936362";
-
-    /**
-     * No listener message.
-     */
-    private static final String NO_LISTENER = "请把我的守护也拉进群，否则会造成大量消息重复（如果已经拉了，那就稍等 10 秒钟，我的守护可能在醒瞌睡 O(∩_∩)O哈哈~）\n\nPS：机器人使用问题请看帖 https://hacpai.com/article/1467011936362";
-
-    /**
      * 记录未群推过的群 id 集合.
      */
     private static final Set<Long> UNPUSH_GROUPS = new CopyOnWriteArraySet<>();
@@ -134,10 +124,6 @@ public class QQService {
      * &lt;discussId, time&gt;
      */
     private final Map<Long, Long> DISCUSS_AD_TIME = new ConcurrentHashMap<>();
-    /**
-     * 是否启用小薇的守护来进行消息送达确认.
-     */
-    private final boolean MSG_ACK_ENABLED = XiaoVs.getBoolean("qq.bot.ack");
     /**
      * Group sent messages.
      */
@@ -228,60 +214,10 @@ public class QQService {
             }
         });
 
-        // Load groups & disscusses
         reloadGroups();
         reloadDiscusses();
 
         LOGGER.info("小薇初始化完毕");
-
-        if (MSG_ACK_ENABLED) { // 如果启用了消息送达确认
-            LOGGER.info("开始初始化小薇的守护（细节请看：https://github.com/b3log/xiaov/issues/3）");
-
-            xiaoVListener = new SmartQQClient(new MessageCallback() {
-                @Override
-                public void onMessage(final Message message) {
-                    try {
-                        Thread.sleep(500 + RandomUtils.nextInt(1000));
-                        final String content = message.getContent();
-                        final String key = XiaoVs.getString("qq.bot.key");
-                        if (!StringUtils.startsWith(content, key)) { // 不是管理命令
-                            // 让小薇的守护进行自我介绍
-                            xiaoVListener.sendMessageToFriend(message.getUserId(), XIAO_V_LISTENER_INTRO);
-
-                            return;
-                        }
-
-                        final String msg = StringUtils.substringAfter(content, key);
-                        LOGGER.info("Received admin message: " + msg);
-                        sendToPushQQGroups(msg);
-                    } catch (final Exception e) {
-                        LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
-                    }
-                }
-
-                @Override
-                public void onGroupMessage(final GroupMessage message) {
-                    final String content = message.getContent();
-
-                    if (GROUP_SENT_MSGS.contains(content)) { // indicates message received
-                        GROUP_SENT_MSGS.remove(content);
-                    }
-                }
-
-                @Override
-                public void onDiscussMessage(final DiscussMessage message) {
-                    final String content = message.getContent();
-
-                    if (DISCUSS_SENT_MSGS.contains(content)) { // indicates message received
-                        DISCUSS_SENT_MSGS.remove(content);
-                    }
-                }
-            });
-
-            LOGGER.info("小薇的守护初始化完毕");
-        }
-
-        LOGGER.info("小薇 QQ 机器人服务开始工作！");
     }
 
     private void sendToForum(final String msg, final String user) {
@@ -432,40 +368,6 @@ public class QQService {
 
         LOGGER.info("Pushing [msg=" + msg + "] to QQ qun [" + group.getName() + "]");
         xiaoV.sendMessageToGroup(groupId, msg);
-
-        if (MSG_ACK_ENABLED) { // 如果启用了消息送达确认
-            // 进行消息重发
-
-            GROUP_SENT_MSGS.add(msg);
-
-            if (GROUP_SENT_MSGS.size() > QQ_GROUPS.size() * 5) {
-                GROUP_SENT_MSGS.remove(0);
-            }
-
-            final int maxRetries = 3;
-            int retries = 0;
-            int sentTries = 0;
-            while (retries < maxRetries) {
-                retries++;
-
-                try {
-                    Thread.sleep(3500);
-                } catch (final Exception e) {
-                    continue;
-                }
-
-                if (GROUP_SENT_MSGS.contains(msg)) {
-                    LOGGER.info("Pushing [msg=" + msg + "] to QQ qun [" + group.getName() + "] with retries [" + retries + "]");
-                    xiaoV.sendMessageToGroup(groupId, msg);
-                    sentTries++;
-                }
-            }
-
-            if (maxRetries == sentTries) {
-                LOGGER.info("Pushing [msg=" + msg + "] to QQ qun [" + group.getName() + "]");
-                xiaoV.sendMessageToGroup(groupId, NO_LISTENER);
-            }
-        }
     }
 
     private void sendMessageToDiscuss(final Long discussId, final String msg) {
@@ -486,40 +388,6 @@ public class QQService {
 
         LOGGER.info("Pushing [msg=" + msg + "] to QQ discuss [" + discuss.getName() + "]");
         xiaoV.sendMessageToDiscuss(discussId, msg);
-
-        if (MSG_ACK_ENABLED) { // 如果启用了消息送达确认
-            // 进行消息重发
-
-            DISCUSS_SENT_MSGS.add(msg);
-
-            if (DISCUSS_SENT_MSGS.size() > QQ_DISCUSSES.size() * 5) {
-                DISCUSS_SENT_MSGS.remove(0);
-            }
-
-            final int maxRetries = 3;
-            int retries = 0;
-            int sentTries = 0;
-            while (retries < maxRetries) {
-                retries++;
-
-                try {
-                    Thread.sleep(3500);
-                } catch (final Exception e) {
-                    continue;
-                }
-
-                if (GROUP_SENT_MSGS.contains(msg)) {
-                    LOGGER.info("Pushing [msg=" + msg + "] to QQ discuss [" + discuss.getName() + "] with retries [" + retries + "]");
-                    xiaoV.sendMessageToDiscuss(discussId, msg);
-                    sentTries++;
-                }
-            }
-
-            if (maxRetries == sentTries) {
-                LOGGER.info("Pushing [msg=" + msg + "] to QQ discuss [" + discuss.getName() + "]");
-                xiaoV.sendMessageToDiscuss(discussId, NO_LISTENER);
-            }
-        }
     }
 
     private void onQQGroupMessage(final GroupMessage message) {

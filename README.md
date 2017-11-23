@@ -38,11 +38,9 @@
 
 这个问题是因为 QQ 服务器判断消息有问题时的返回，具体可关注这个 [issue](https://github.com/ScienJus/smartqq/issues/11)。
 
-目前已经使用“小薇的守护”进行了改进，大幅度提升了消息发送的成功率。
-
 ### 出现“Api返回码[103]”怎么破？
 
-先关闭小薇，然后将小薇、小薇的守护两个账号依次分别登录 [w.qq.com](http://w.qq.com) 后在设置中退出登录，最后再次启动小薇，这时扫码后应该就不会 103 了。
+先关闭小薇，登录 [w.qq.com](http://w.qq.com) 后在设置中退出登录，最后再次启动小薇，这时扫码后应该就不会 103 了。
 
 ### 报错 Group list error [groupId=xxxx], please report this bug to developer... 怎么破？
 
@@ -65,17 +63,12 @@
    * Windows: `java -cp WEB-INF/lib/*;WEB-INF/classes org.b3log.xiaov.Starter`
    * Unix-like: `java -cp WEB-INF/lib/*:WEB-INF/classes org.b3log.xiaov.Starter`
 
-这样小薇就启动了，然后根据输出提示进行扫码登录：
-
-* 第一次扫码是小薇登录
-* 第二次扫码是小薇的守护登录（如果启用了守护才会需要扫第二次码）
-
-小薇的守护只需要和小薇在同一个群就行（守护不要用自己的，需要用一个不发消息的 QQ，不然消息监听会有问题）。
+这样小薇就启动了，然后根据输出提示进行扫码登录。
 
 另外，如果你一定要在服务器上启动小薇（但真心不建议，请参考 FAQ 第二条）：
 
 1. 打 war 包部署自己的容器，需要修改 latke.props 中的 `serverHost` 为你服务器的公网 IP、`serverPort` 为你容器监听的端口，如果你用了反向代理，那么 `serverHost` 可能就是你绑定的域名、`serverPort` 是 80。简而言之，这两个值是你最终访问接口时候的值
-2. 登录的扫码可能有点麻烦，这时可以通过 /login 地址来访问二维码，哥考虑得周到吧
+2. 通过 /login 地址来访问二维码
 
 ## 配置
 
@@ -88,7 +81,6 @@
 * qq.bot.key 定义了管理 QQ 或论坛发过来的消息群推的口令，需要消息开头是这个口令，验证过后才会群推后面的消息内容
 * qq.bot.pushGroups 定义了群推的群名，用 `,` 分隔多个群；也可以配置成 `*` 推送所有群
 * qq.bot.pushGroupUserCnt 定义了群推时群人数的下限，只有大于等于这个人数的群才推送
-* qq.bot.ack 定义了是否启用消息送达确认机制（小薇的守护），默认不启用
 * bot.follow.keywords 定义了监听群消息时的关键词，碰到这些词就做处理，比如对于群消息：“如何能在 3 天内精通 Java 呢？”包含了关键词 Java，机器人就对其进行处理
 * bot.follow.keywordAnswer 定义了监听群消息时出现了关键词后的回复模版
 * forum.api & forum.key 定义了论坛 API 地址和口令，小薇会将所有监听到的消息通过该 API 转发到论坛
