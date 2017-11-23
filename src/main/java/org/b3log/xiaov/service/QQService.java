@@ -46,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.3.11, Nov 3, 2017
+ * @version 1.4.3.12, Nov 23, 2017
  * @since 1.0.0
  */
 @Service
@@ -179,27 +179,24 @@ public class QQService {
         xiaoV = new SmartQQClient(new MessageCallback() {
             @Override
             public void onMessage(final Message message) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500 + RandomUtils.nextInt(1000));
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500 + RandomUtils.nextInt(1000));
 
-                            final String content = message.getContent();
-                            final String key = XiaoVs.getString("qq.bot.key");
-                            if (!StringUtils.startsWith(content, key)) { // 不是管理命令，只是普通的私聊
-                                // 让小薇进行自我介绍
-                                xiaoV.sendMessageToFriend(message.getUserId(), XIAO_V_INTRO);
+                        final String content = message.getContent();
+                        final String key = XiaoVs.getString("qq.bot.key");
+                        if (!StringUtils.startsWith(content, key)) { // 不是管理命令，只是普通的私聊
+                            // 让小薇进行自我介绍
+                            xiaoV.sendMessageToFriend(message.getUserId(), XIAO_V_INTRO);
 
-                                return;
-                            }
-
-                            final String msg = StringUtils.substringAfter(content, key);
-                            LOGGER.info("Received admin message: " + msg);
-                            sendToPushQQGroups(msg);
-                        } catch (final Exception e) {
-                            LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
+                            return;
                         }
+
+                        final String msg = StringUtils.substringAfter(content, key);
+                        LOGGER.info("Received admin message: " + msg);
+                        sendToPushQQGroups(msg);
+                    } catch (final Exception e) {
+                        LOGGER.log(Level.ERROR, "XiaoV on group message error", e);
                     }
                 }).start();
             }
