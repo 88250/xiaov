@@ -5,11 +5,11 @@
 [XiaoV](https://github.com/b3log/xiaov)（小薇）是一个用 Java 写的 QQ 聊天机器人 Web 服务，可以用于社群互动：
 
 * 监听多个 QQ 群消息，发现有“感兴趣”的内容时通过图灵|百度|茉莉机器人进行智能回复
-* 监听到的 QQ 群消息可以配置推送到论坛某个接口上，以实现论坛弹幕或者动态聚合效果，请看[实例](https://hacpai.com/community)
+* 监听到的 QQ 群消息可以配置推送到其他系统接口上，请看[实例](https://hacpai.com/community)
 * 在论坛代码中调用小薇进行 QQ 消息推送，比如论坛有新帖时自动推送到 QQ 群
 * 加小薇为好友后可通过暗号（key）让她群推消息
 
-总之，如果你需要一个连通 QQ 群和论坛的机器人，小薇是个不错的选择！
+总之，如果你需要一个连通 QQ 群和其他系统的机器人，小薇是个不错的选择！
 
 ### 作者
 
@@ -20,7 +20,7 @@
 **体验之前一定要先仔细看完这个帖子：[如何正确地使用小薇 QQ 机器人](https://hacpai.com/article/1467011936362)**
 
 * 加 QQ 群 242561391，然后发消息“小薇，你好！”（本群主要是 Java 开源程序群，小薇不一定开机）
-* 在论坛的[社群动态](https://hacpai.com/community)页面可看到由 QQ 群同步过来的消息
+* 在黑客派的[社群动态](https://hacpai.com/community)页面可看到由 QQ 群同步过来的消息
 
 ## FAQ
 
@@ -59,9 +59,7 @@
 
 1. 安装好 **JDK1.8**、Maven 3
 2. Clone 本项目，并在项目根目录上执行 `mvn install`
-3. 使用 `mvn jetty:run` 启动，或者在 target/xiaov 目录下执行命令：
-   * Windows: `java -cp WEB-INF/lib/*;WEB-INF/classes org.b3log.xiaov.Starter`
-   * Unix-like: `java -cp WEB-INF/lib/*:WEB-INF/classes org.b3log.xiaov.Starter`
+3. 执行 `mvn jetty:run`
 
 这样小薇就启动了，然后根据输出提示进行扫码登录。
 
@@ -78,29 +76,29 @@
 * baidu.cookie 定义了百度机器人访问需要的 Cookie（登录百度，然后抓包）
 * qq.bot.type 定义了机器人类型，1 是使用图灵机器人，2 则使用百度机器人
 * qq.bot.name 定义了机器人的名字，这个主要是用于识别群消息是否“感兴趣”，比如对于群消息：“小薇，你吃过饭了吗？”包含了机器人的名字，机器人就对其进行处理
-* qq.bot.key 定义了管理 QQ 或论坛发过来的消息群推的口令，需要消息开头是这个口令，验证过后才会群推后面的消息内容
+* qq.bot.key 定义了管理 QQ 或其他系统发过来的消息群推的口令，需要消息开头是这个口令，验证过后才会群推后面的消息内容
 * qq.bot.pushGroups 定义了群推的群名，用 `,` 分隔多个群；也可以配置成 `*` 推送所有群
 * qq.bot.pushGroupUserCnt 定义了群推时群人数的下限，只有大于等于这个人数的群才推送
 * bot.follow.keywords 定义了监听群消息时的关键词，碰到这些词就做处理，比如对于群消息：“如何能在 3 天内精通 Java 呢？”包含了关键词 Java，机器人就对其进行处理
 * bot.follow.keywordAnswer 定义了监听群消息时出现了关键词后的回复模版
-* forum.api & forum.key 定义了论坛 API 地址和口令，小薇会将所有监听到的消息通过该 API 转发到论坛
+* third.api & third.key 定义了其他系统 API 地址和口令，小薇会将所有监听到的消息通过该 API 推送到这个系统
 
 ## API
 
-### 论坛推送 QQ 群
+### 其他系统推送 QQ 群
 
-* 功能：小薇提供给论坛调用的 HTTP 接口，用于将论坛的内容推送到 QQ 群
+* 功能：小薇提供给其他系统调用的 HTTP 接口，用于将其他系统的内容推送到 QQ 群
 * URL：/qq
 * Method：POST
 * Body：key={qq.bot.key}&msg={msgcontent}
 * 例如：/qq?key=123456&msg=Hello
 
-### QQ 群推送论坛
+### QQ 群推送其他系统
 
-* 功能：由论坛提供给小薇调用的 HTTP 接口，用于将 QQ 群消息推送到论坛（这个接口是论坛实现的，这里是给出小薇的调用方式和参数）
-* URL：{forum.api}
+* 功能：由其他系统提供给小薇调用的 HTTP 接口，用于将 QQ 群消息推送到这个系统（这个接口所需系统是实现的，这里是给出小薇的调用方式和参数）
+* URL：{third.api}
 * Method：POST
-* Body：key={forum.key}&msg={msgcontent}&user={hexuserid}
+* Body：key={third.key}&msg={msgcontent}&user={hexuserid}
 * 例如：/xiaov?key=123456&msg=Hello&user=0a
 
 ## 鸣谢
@@ -117,4 +115,3 @@
 
 * [小薇讨论区](https://hacpai.com/tag/xiaov)（没有邀请码可加 Q 群 242561391）
 * 你想[搭建一个社区](https://github.com/b3log/symphony)么或者[搭建一个博客](https://github.com/b3log/solo)么？
-* 上面两个项目给颗星再走，谢谢！

@@ -220,17 +220,16 @@ public class QQService {
         LOGGER.info("小薇初始化完毕");
     }
 
-    private void sendToForum(final String msg, final String user) {
-        final String forumAPI = XiaoVs.getString("forum.api");
-        final String forumKey = XiaoVs.getString("forum.key");
+    private void sendToThird(final String msg, final String user) {
+        final String thirdAPI = XiaoVs.getString("third.api");
+        final String thirdKey = XiaoVs.getString("third.key");
 
         final HTTPRequest request = new HTTPRequest();
         request.setRequestMethod(HTTPRequestMethod.POST);
-
         try {
-            request.setURL(new URL(forumAPI));
+            request.setURL(new URL(thirdAPI));
 
-            final String body = "key=" + URLEncoder.encode(forumKey, "UTF-8")
+            final String body = "key=" + URLEncoder.encode(thirdKey, "UTF-8")
                     + "&msg=" + URLEncoder.encode(msg, "UTF-8")
                     + "&user=" + URLEncoder.encode(user, "UTF-8");
             request.setPayload(body.getBytes("UTF-8"));
@@ -238,10 +237,10 @@ public class QQService {
             final HTTPResponse response = URL_FETCH_SVC.fetch(request);
             final int sc = response.getResponseCode();
             if (HttpServletResponse.SC_OK != sc) {
-                LOGGER.warn("Sends message to Forum status code is [" + sc + "]");
+                LOGGER.warn("Sends message to third system status code is [" + sc + "]");
             }
         } catch (final Exception e) {
-            LOGGER.log(Level.ERROR, "Sends message to Forum failed: " + e.getMessage());
+            LOGGER.log(Level.ERROR, "Sends message to third system failed: " + e.getMessage());
         }
     }
 
@@ -395,11 +394,11 @@ public class QQService {
 
         final String content = message.getContent();
         final String userName = Long.toHexString(message.getUserId());
-        // Push to forum
+        // Push to third system
         String qqMsg = content.replaceAll("\\[\"face\",[0-9]+\\]", "");
         if (StringUtils.isNotBlank(qqMsg)) {
             qqMsg = "<p>" + qqMsg + "</p>";
-            sendToForum(qqMsg, userName);
+            sendToThird(qqMsg, userName);
         }
 
         String msg = "";
@@ -436,11 +435,11 @@ public class QQService {
 
         final String content = message.getContent();
         final String userName = Long.toHexString(message.getUserId());
-        // Push to forum
+        // Push to third system
         String qqMsg = content.replaceAll("\\[\"face\",[0-9]+\\]", "");
         if (StringUtils.isNotBlank(qqMsg)) {
             qqMsg = "<p>" + qqMsg + "</p>";
-            sendToForum(qqMsg, userName);
+            sendToThird(qqMsg, userName);
         }
 
         String msg = "";
