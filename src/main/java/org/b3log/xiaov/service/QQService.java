@@ -334,7 +334,7 @@ public class QQService {
                 if (Strings.contains(name, groups)) {
                     final GroupInfo groupInfo = xiaoV.getGroupInfo(group.getCode());
                     final int userCount = groupInfo.getUsers().size();
-                    if (userCount < 100) {
+                    if (userCount < PUSH_GROUP_USER_COUNT) {
                         continue;
                     }
 
