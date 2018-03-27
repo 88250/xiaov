@@ -46,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.3.12, Nov 23, 2017
+ * @version 1.4.4.0, Mar 27, 2018
  * @since 1.0.0
  */
 @Service
@@ -544,10 +544,11 @@ public class QQService {
                     ret = ret.replace("null", "无");
                 }
             }
+        }
 
-            if (StringUtils.isBlank(ret)) {
-                ret = "嗯~";
-            }
+        ret = ret.replaceAll(XiaoVs.QQ_BOT_NAME, ""); // 避免死循环，详见 https://github.com/b3log/xiaov/issues/40
+        if (StringUtils.isBlank(ret)) {
+            ret = "嗯~";
         }
 
         return ret;
