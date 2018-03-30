@@ -2,7 +2,11 @@ package com.scienjus.smartqq;
 
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
-import com.scienjus.smartqq.model.*;
+import com.scienjus.smartqq.model.Category;
+import com.scienjus.smartqq.model.DiscussMessage;
+import com.scienjus.smartqq.model.Friend;
+import com.scienjus.smartqq.model.GroupMessage;
+import com.scienjus.smartqq.model.Message;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +18,6 @@ import java.util.List;
 public class Application {
 
     public static void main(String[] args) {
-        System.out.println("begin");
         //创建一个新对象时需要扫描二维码登录，并且传一个处理接收到消息的回调，如果你不需要接收消息，可以传null
         SmartQQClient client = new SmartQQClient(new MessageCallback() {
             @Override
