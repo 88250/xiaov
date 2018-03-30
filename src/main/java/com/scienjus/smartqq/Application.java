@@ -14,6 +14,7 @@ import java.util.List;
 public class Application {
 
     public static void main(String[] args) {
+        System.out.println("begin");
         //创建一个新对象时需要扫描二维码登录，并且传一个处理接收到消息的回调，如果你不需要接收消息，可以传null
         SmartQQClient client = new SmartQQClient(new MessageCallback() {
             @Override
