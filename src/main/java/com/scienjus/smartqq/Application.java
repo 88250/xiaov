@@ -2,11 +2,7 @@ package com.scienjus.smartqq;
 
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
-import com.scienjus.smartqq.model.Category;
-import com.scienjus.smartqq.model.DiscussMessage;
-import com.scienjus.smartqq.model.Friend;
-import com.scienjus.smartqq.model.GroupMessage;
-import com.scienjus.smartqq.model.Message;
+import com.scienjus.smartqq.model.*;
 
 import java.io.IOException;
 import java.util.List;

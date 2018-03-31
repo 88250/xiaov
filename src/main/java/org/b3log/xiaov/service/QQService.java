@@ -546,10 +546,10 @@ public class QQService {
             }
         }
 
-        ret = ret.replaceAll(XiaoVs.QQ_BOT_NAME, ""); // 避免死循环，详见 https://github.com/b3log/xiaov/issues/40
         if (StringUtils.isBlank(ret)) {
             ret = "嗯~";
         }
+        ret = ret.replaceAll(XiaoVs.QQ_BOT_NAME, ""); // 避免死循环，详见 https://github.com/b3log/xiaov/issues/40
 
         return ret;
     }
