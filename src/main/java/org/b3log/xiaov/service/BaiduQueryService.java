@@ -65,26 +65,6 @@ public class BaiduQueryService {
      * @return robot returned message, return {@code null} if not found
      */
     public String chat(String msg) {
-        if (StringUtils.isBlank(msg)) {
-            return null;
-        }
-
-        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + " ")) {
-            msg = msg.replace(XiaoVs.QQ_BOT_NAME + " ", "");
-        }
-        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + "，")) {
-            msg = msg.replace(XiaoVs.QQ_BOT_NAME + "，", "");
-        }
-        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + ",")) {
-            msg = msg.replace(XiaoVs.QQ_BOT_NAME + ",", "");
-        }
-        if (msg.startsWith(XiaoVs.QQ_BOT_NAME)) {
-            msg = msg.replace(XiaoVs.QQ_BOT_NAME, "");
-        }
-
-        if (StringUtils.isBlank(msg)) {
-            msg = "你好~";
-        }
 
         String BAIDU_URL = "https://sp0.baidu.com/yLsHczq6KgQFm2e88IuM_a/s?sample_name=bear_brain&request_query=#MSG#&bear_type=2";
 

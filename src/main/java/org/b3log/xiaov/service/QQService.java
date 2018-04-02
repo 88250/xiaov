@@ -471,6 +471,26 @@ public class QQService {
         sendMessageToDiscuss(discussId, msg);
     }
 
+    private String replaceBotName(String msg){
+        if (StringUtils.isBlank(msg)) {
+            return null;
+        }
+
+        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + " ")) {
+            msg = msg.replace(XiaoVs.QQ_BOT_NAME + " ", "");
+        }
+        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + "，")) {
+            msg = msg.replace(XiaoVs.QQ_BOT_NAME + "，", "");
+        }
+        if (msg.startsWith(XiaoVs.QQ_BOT_NAME + ",")) {
+            msg = msg.replace(XiaoVs.QQ_BOT_NAME + ",", "");
+        }
+        if (msg.startsWith(XiaoVs.QQ_BOT_NAME)) {
+            msg = msg.replace(XiaoVs.QQ_BOT_NAME, "");
+        }
+        return msg;
+    }
+
     private String answer(final String content, final String userName) {
         String keyword = "";
         String[] keywords = StringUtils.split(XiaoVs.getString("bot.follow.keywords"), ",");
@@ -484,6 +504,7 @@ public class QQService {
         }
 
         String ret = "";
+        String msg = replaceBotName(content);
         if (StringUtils.isNotBlank(keyword)) {
             try {
                 ret = XiaoVs.getString("bot.follow.keywordAnswer");
@@ -492,17 +513,17 @@ public class QQService {
             } catch (final UnsupportedEncodingException e) {
                 LOGGER.log(Level.ERROR, "Search key encoding failed", e);
             }
-        } else if (StringUtils.contains(content, XiaoVs.QQ_BOT_NAME)) {
-            if (1 == QQ_BOT_TYPE) {
-                ret = turingQueryService.chat(userName, content);
+        } else if (StringUtils.contains(content, XiaoVs.QQ_BOT_NAME) && StringUtils.isNotBlank(msg)) {
+            if (1 == QQ_BOT_TYPE && StringUtils.isNotBlank(userName)) {
+                ret = turingQueryService.chat(userName, msg);
                 ret = StringUtils.replace(ret, "图灵机器人", XiaoVs.QQ_BOT_NAME + "机器人");
                 ret = StringUtils.replace(ret, "默认机器人", XiaoVs.QQ_BOT_NAME + "机器人");
 
                 ret = StringUtils.replace(ret, "<br>", "\n");
             } else if (2 == QQ_BOT_TYPE) {
-                ret = baiduQueryService.chat(content);
+                ret = baiduQueryService.chat(msg);
             } else if (3 == QQ_BOT_TYPE) {
-                ret = itpkQueryService.chat(content);
+                ret = itpkQueryService.chat(msg);
                 // 如果是茉莉机器人，则将灵签结果格式化输出
                 JSONObject parseMsg;
                 if (ret.indexOf("\\u8d22\\u795e\\u7237\\u7075\\u7b7e") > 0) {
