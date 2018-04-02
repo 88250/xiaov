@@ -15,24 +15,25 @@
  */
 package org.b3log.xiaov.processor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Base64;
 
 /**
  * Shows QR code servlet.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.0, Aug 21, 2016
+ * @version 1.0.0.1, Apr 2, 2018
  * @since 2.1.0
  */
 public class QRCodeShowServlet extends HttpServlet {
@@ -52,18 +53,16 @@ public class QRCodeShowServlet extends HttpServlet {
             throws ServletException, IOException {
         resp.addHeader("Cache-Control", "no-store");
 
-        OutputStream output = null;
-        try {
+        try (final PrintWriter writer = resp.getWriter()) {
             final String filePath = new File("qrcode.png").getCanonicalPath();
             final byte[] data = IOUtils.toByteArray(new FileInputStream(filePath));
-
-            output = resp.getOutputStream();
-            IOUtils.write(data, output);
-            output.flush();
+            final StringBuilder htmlBuilder = new StringBuilder();
+            htmlBuilder.append("<html><body><img src=\"data:image/png;base64,").
+                    append(Base64.getEncoder().encodeToString(data)).append("\"/></body></html>");
+            writer.write(htmlBuilder.toString());
+            writer.flush();
         } catch (final Exception e) {
             LOGGER.log(Level.ERROR, "在线显示二维码图片异常", e);
-        } finally {
-            IOUtils.closeQuietly(output);
         }
     }
 }
