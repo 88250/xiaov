@@ -54,6 +54,7 @@
 
 * [论坛发帖](https://hacpai.com/tag/xiaov)（推荐做法）
 * [New Issue](https://github.com/b3log/xiaov/issues/new) 
+* Q 群 242561391
 
 ## 启动
 
@@ -110,8 +111,3 @@
 * [百度机器人](https://baidu.com)：再次赋予了小薇抖机灵的能力
 * [茉莉机器人](http://www.itpk.cn)：再再次赋予了小薇抖机灵的能力（据说很污 :joy:）
 * [Latke](https://github.com/b3log/latke)：简洁高效的 Java Web 框架 
-
-## 其他
-
-* [小薇讨论区](https://hacpai.com/tag/xiaov)（没有邀请码可加 Q 群 242561391）
-* 你想[搭建一个社区](https://github.com/b3log/symphony)么或者[搭建一个博客](https://github.com/b3log/solo)么？
