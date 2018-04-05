@@ -15,23 +15,24 @@
  */
 package org.b3log.xiaov;
 
-import java.io.File;
 import org.b3log.latke.Latkes;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Slf4jLog;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+import java.io.File;
+
 /**
  * XiaoV with embedded Jetty.
  *
  * <ul>
- * <li>Windows: java -cp WEB-INF/lib/*;WEB-INF/classes org.b3log.xiaov.Starter</li>
- * <li>Unix-like: java -cp WEB-INF/lib/*:WEB-INF/classes org.b3log.xiaov.Starter</li>
+ * <li>Windows: java -cp "WEB-INF/lib/*;WEB-INF/classes" org.b3log.xiaov.Starter</li>
+ * <li>Unix-like: java -cp "WEB-INF/lib/*:WEB-INF/classes" org.b3log.xiaov.Starter</li>
  * </ul>
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.1, Sep 24, 2016
+ * @version 1.0.0.2, Apr 5, 2018
  * @since 2.2.0
  */
 public class Starter {
