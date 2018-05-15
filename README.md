@@ -11,6 +11,34 @@
 
 总之，如果你需要一个连通 QQ 群和其他系统的机器人，小薇是个不错的选择！
 
+## 启动
+
+1. 安装好 **JDK1.8**、Maven 3
+2. Clone 本项目，并在项目根目录上执行 `mvn install`
+3. 执行 `mvn jetty:run`
+
+这样小薇就启动了，然后根据输出提示进行扫码登录。
+
+另外，如果你一定要在服务器上启动小薇（但真心不建议，请参考 FAQ 第二条）：
+
+1. 打 war 包部署自己的容器，需要修改 latke.props 中的 `serverHost` 为你服务器的公网 IP、`serverPort` 为你容器监听的端口，如果你用了反向代理，那么 `serverHost` 可能就是你绑定的域名、`serverPort` 是 80。简而言之，这两个值是你最终访问接口时候的值
+2. 通过 /login 地址来访问二维码
+
+## 配置
+
+配置文件主要是 src/main/resources/xiaov.properties：
+
+* turing.api & turing.key 定义了图灵机器人的 API 地址和口令
+* baidu.cookie 定义了百度机器人访问需要的 Cookie（登录百度，然后抓包）
+* qq.bot.type 定义了机器人类型，1 是使用图灵机器人，2 则使用百度机器人
+* qq.bot.name 定义了机器人的名字，这个主要是用于识别群消息是否“感兴趣”，比如对于群消息：“小薇，你吃过饭了吗？”包含了机器人的名字，机器人就对其进行处理
+* qq.bot.key 定义了管理 QQ 或其他系统发过来的消息群推的口令，需要消息开头是这个口令，验证过后才会群推后面的消息内容
+* qq.bot.pushGroups 定义了群推的群名，用 `,` 分隔多个群；也可以配置成 `*` 推送所有群
+* qq.bot.pushGroupUserCnt 定义了群推时群人数的下限，只有大于等于这个人数的群才推送
+* bot.follow.keywords 定义了监听群消息时的关键词，碰到这些词就做处理，比如对于群消息：“如何能在 3 天内精通 Java 呢？”包含了关键词 Java，机器人就对其进行处理
+* bot.follow.keywordAnswer 定义了监听群消息时出现了关键词后的回复模版
+* third.api & third.key 定义了其他系统 API 地址和口令，小薇会将所有监听到的消息通过该 API 推送到这个系统
+
 ## FAQ
 
 ### 如何正确地使用小薇 QQ 机器人？
@@ -43,34 +71,6 @@
 
 * [论坛发帖](https://hacpai.com/tag/xiaov)（推荐做法）
 * [New Issue](https://github.com/b3log/xiaov/issues/new) 
-
-## 启动
-
-1. 安装好 **JDK1.8**、Maven 3
-2. Clone 本项目，并在项目根目录上执行 `mvn install`
-3. 执行 `mvn jetty:run`
-
-这样小薇就启动了，然后根据输出提示进行扫码登录。
-
-另外，如果你一定要在服务器上启动小薇（但真心不建议，请参考 FAQ 第二条）：
-
-1. 打 war 包部署自己的容器，需要修改 latke.props 中的 `serverHost` 为你服务器的公网 IP、`serverPort` 为你容器监听的端口，如果你用了反向代理，那么 `serverHost` 可能就是你绑定的域名、`serverPort` 是 80。简而言之，这两个值是你最终访问接口时候的值
-2. 通过 /login 地址来访问二维码
-
-## 配置
-
-配置文件主要是 src/main/resources/xiaov.properties：
-
-* turing.api & turing.key 定义了图灵机器人的 API 地址和口令
-* baidu.cookie 定义了百度机器人访问需要的 Cookie（登录百度，然后抓包）
-* qq.bot.type 定义了机器人类型，1 是使用图灵机器人，2 则使用百度机器人
-* qq.bot.name 定义了机器人的名字，这个主要是用于识别群消息是否“感兴趣”，比如对于群消息：“小薇，你吃过饭了吗？”包含了机器人的名字，机器人就对其进行处理
-* qq.bot.key 定义了管理 QQ 或其他系统发过来的消息群推的口令，需要消息开头是这个口令，验证过后才会群推后面的消息内容
-* qq.bot.pushGroups 定义了群推的群名，用 `,` 分隔多个群；也可以配置成 `*` 推送所有群
-* qq.bot.pushGroupUserCnt 定义了群推时群人数的下限，只有大于等于这个人数的群才推送
-* bot.follow.keywords 定义了监听群消息时的关键词，碰到这些词就做处理，比如对于群消息：“如何能在 3 天内精通 Java 呢？”包含了关键词 Java，机器人就对其进行处理
-* bot.follow.keywordAnswer 定义了监听群消息时出现了关键词后的回复模版
-* third.api & third.key 定义了其他系统 API 地址和口令，小薇会将所有监听到的消息通过该 API 推送到这个系统
 
 ## API
 
