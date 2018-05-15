@@ -11,17 +11,6 @@
 
 总之，如果你需要一个连通 QQ 群和其他系统的机器人，小薇是个不错的选择！
 
-### 作者
-
-小薇的爸爸叫 [Daniel](https://github.com/88250)，妈妈叫 [Vanessa](https://github.com/Vanessa219)，其他好心人可以在[这里](https://github.com/b3log/xiaov/graphs/contributors)看到。
-
-### 体验
-
-**体验之前一定要先仔细看完这个帖子：[如何正确地使用小薇 QQ 机器人](https://hacpai.com/article/1467011936362)**
-
-* 加 QQ 群 242561391，然后发消息“小薇，你好！”（本群主要是 Java 开源程序群，小薇不一定开机）
-* 在黑客派的[社群动态](https://hacpai.com/community)页面可看到由 QQ 群同步过来的消息
-
 ## FAQ
 
 ### 如何正确地使用小薇 QQ 机器人？
@@ -54,7 +43,6 @@
 
 * [论坛发帖](https://hacpai.com/tag/xiaov)（推荐做法）
 * [New Issue](https://github.com/b3log/xiaov/issues/new) 
-* Q 群 242561391
 
 ## 启动
 
