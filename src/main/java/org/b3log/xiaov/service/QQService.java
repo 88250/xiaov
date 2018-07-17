@@ -46,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.5.0, Apr 5, 2018
+ * @version 1.4.5.1, Jul 17, 2018
  * @since 1.0.0
  */
 @Service
@@ -223,6 +223,9 @@ public class QQService {
     private void sendToThird(final String msg, final String user) {
         final String thirdAPI = XiaoVs.getString("third.api");
         final String thirdKey = XiaoVs.getString("third.key");
+        if (StringUtils.isBlank(thirdAPI)) {
+            return;
+        }
 
         final HTTPRequest request = new HTTPRequest();
         request.setRequestMethod(HTTPRequestMethod.POST);
