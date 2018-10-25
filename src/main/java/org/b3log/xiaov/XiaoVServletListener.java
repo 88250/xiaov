@@ -15,27 +15,22 @@
  */
 package org.b3log.xiaov;
 
+import org.b3log.latke.Latkes;
+import org.b3log.latke.servlet.AbstractServletListener;
+import org.b3log.latke.util.Stopwatchs;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
-import org.b3log.latke.Latkes;
-import org.b3log.latke.logging.Logger;
-import org.b3log.latke.servlet.AbstractServletListener;
-import org.b3log.latke.util.Stopwatchs;
 
 /**
  * XiaoV servlet listener.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.1, Aug 21, 2016
+ * @version 1.0.0.2, Oct 25, 2018
  * @since 1.0.0
  */
 public final class XiaoVServletListener extends AbstractServletListener {
-
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(XiaoVServletListener.class.getName());
 
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {

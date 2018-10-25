@@ -32,7 +32,7 @@ import java.io.File;
  * </ul>
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.2, Apr 5, 2018
+ * @version 1.0.0.3, Oct 25, 2018
  * @since 2.2.0
  */
 public class Starter {
@@ -47,7 +47,7 @@ public class Starter {
 
     public static void main(String[] args) {
         Latkes.setScanPath("org.b3log.xiaov"); // For Latke IoC
-        Latkes.initRuntimeEnv();
+        Latkes.init();
 
         final String classesPath = ClassLoader.getSystemResource("").getPath(); // Real path including maven sub folder
         String webappDirLocation = classesPath.replace("target/classes/", "src/main/webapp/"); // POM structure in dev env

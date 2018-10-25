@@ -15,20 +15,18 @@
  */
 package org.b3log.xiaov.processor;
 
-import org.b3log.latke.ioc.LatkeBeanManager;
-import org.b3log.latke.ioc.Lifecycle;
+import org.b3log.latke.ioc.BeanManager;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.xiaov.service.QQService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 /**
  * XiaoV, get up!
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.1, Nov 23, 2017
+ * @version 1.0.0.2, Oct 25, 2018
  * @since 2.1.0
  */
 public class XiaoVGetUpServlet extends HttpServlet {
@@ -46,10 +44,10 @@ public class XiaoVGetUpServlet extends HttpServlet {
     /**
      * Bean manager.
      */
-    private LatkeBeanManager beanManager;
+    private BeanManager beanManager;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         new Thread(() -> {
             try {
                 Thread.sleep(3000);
@@ -57,8 +55,7 @@ public class XiaoVGetUpServlet extends HttpServlet {
                 LOGGER.log(Level.ERROR, e.getMessage());
             }
 
-            beanManager = Lifecycle.getBeanManager();
-
+            beanManager = BeanManager.getInstance();
             final QQService qqService = beanManager.getReference(QQService.class);
             qqService.initQQClient();
         }).start();

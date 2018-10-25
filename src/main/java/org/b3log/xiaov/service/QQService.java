@@ -19,23 +19,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.*;
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.b3log.latke.ioc.inject.Inject;
+import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.service.annotation.Service;
-import org.b3log.latke.servlet.HTTPRequestMethod;
-import org.b3log.latke.urlfetch.HTTPRequest;
-import org.b3log.latke.urlfetch.HTTPResponse;
-import org.b3log.latke.urlfetch.URLFetchService;
-import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.latke.util.Strings;
 import org.b3log.xiaov.util.XiaoVs;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +42,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * QQ service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.4.5.1, Jul 17, 2018
+ * @version 1.4.5.2, Oct 25, 2018
  * @since 1.0.0
  */
 @Service
@@ -66,11 +62,6 @@ public class QQService {
      * Advertisements.
      */
     private static final List<String> ADS = new ArrayList<>();
-
-    /**
-     * URL fetch service.
-     */
-    private static final URLFetchService URL_FETCH_SVC = URLFetchServiceFactory.getURLFetchService();
 
     /**
      * XiaoV self intro. Built-in advertisement.
@@ -109,47 +100,57 @@ public class QQService {
      * &lt;groupId, group&gt;
      */
     private final Map<Long, Group> QQ_GROUPS = new ConcurrentHashMap<>();
+
     /**
      * The latest group ad time.
      * &lt;groupId, time&gt;
      */
     private final Map<Long, Long> GROUP_AD_TIME = new ConcurrentHashMap<>();
+
     /**
      * QQ discusses.
      * &lt;discussId, discuss&gt;
      */
     private final Map<Long, Discuss> QQ_DISCUSSES = new ConcurrentHashMap<>();
+
     /**
      * The latest discuss ad time.
      * &lt;discussId, time&gt;
      */
     private final Map<Long, Long> DISCUSS_AD_TIME = new ConcurrentHashMap<>();
+
     /**
      * Group sent messages.
      */
     private final List<String> GROUP_SENT_MSGS = new CopyOnWriteArrayList<>();
+
     /**
      * Discuss sent messages.
      */
     private final List<String> DISCUSS_SENT_MSGS = new CopyOnWriteArrayList<>();
+
     /**
      * QQ client.
      */
     private SmartQQClient xiaoV;
+
     /**
      * QQ client listener.
      */
     private SmartQQClient xiaoVListener;
+
     /**
      * Turing query service.
      */
     @Inject
     private TuringQueryService turingQueryService;
+
     /**
      * Baidu bot query service.
      */
     @Inject
     private BaiduQueryService baiduQueryService;
+
     /**
      * ITPK query service.
      */
@@ -227,18 +228,12 @@ public class QQService {
             return;
         }
 
-        final HTTPRequest request = new HTTPRequest();
-        request.setRequestMethod(HTTPRequestMethod.POST);
         try {
-            request.setURL(new URL(thirdAPI));
-
-            final String body = "key=" + URLEncoder.encode(thirdKey, "UTF-8")
-                    + "&msg=" + URLEncoder.encode(msg, "UTF-8")
-                    + "&user=" + URLEncoder.encode(user, "UTF-8");
-            request.setPayload(body.getBytes("UTF-8"));
-
-            final HTTPResponse response = URL_FETCH_SVC.fetch(request);
-            final int sc = response.getResponseCode();
+            final HttpResponse response = HttpRequest.post(thirdAPI).
+                    form("key", thirdKey).
+                    form("msg", msg).
+                    form("user", user).connectionTimeout(5000).timeout(5000).send();
+            final int sc = response.statusCode();
             if (HttpServletResponse.SC_OK != sc) {
                 LOGGER.warn("Sends message to third system status code is [" + sc + "]");
             }

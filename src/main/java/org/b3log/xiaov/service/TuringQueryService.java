@@ -15,17 +15,11 @@
  */
 package org.b3log.xiaov.service;
 
-import java.net.URL;
-import java.net.URLEncoder;
-import org.apache.commons.lang.StringUtils;
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.service.annotation.Service;
-import org.b3log.latke.servlet.HTTPRequestMethod;
-import org.b3log.latke.urlfetch.HTTPRequest;
-import org.b3log.latke.urlfetch.HTTPResponse;
-import org.b3log.latke.urlfetch.URLFetchService;
-import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.xiaov.util.XiaoVs;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +28,7 @@ import org.json.JSONObject;
  * Turing query service.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.0.0, May 29, 2016
+ * @version 1.0.0.1, Oct 25, 2018
  * @since 1.0.0
  */
 @Service
@@ -43,7 +37,7 @@ public class TuringQueryService {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(TuringQueryService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TuringQueryService.class);
 
     /**
      * Turing Robot API.
@@ -56,32 +50,20 @@ public class TuringQueryService {
     private static final String TURING_KEY = XiaoVs.getString("turing.key");
 
     /**
-     * URL fetch service.
-     */
-    private static final URLFetchService URL_FETCH_SVC = URLFetchServiceFactory.getURLFetchService();
-
-    /**
      * Chat with Turing Robot.
      *
      * @param userName the specified user name
-     * @param msg the specified message
+     * @param msg      the specified message
      * @return robot returned message, return {@code null} if not found
      */
     public String chat(final String userName, String msg) {
-
-        final HTTPRequest request = new HTTPRequest();
-        request.setRequestMethod(HTTPRequestMethod.POST);
-
         try {
-            request.setURL(new URL(TURING_API));
-
-            final String body = "key=" + URLEncoder.encode(TURING_KEY, "UTF-8")
-                    + "&info=" + URLEncoder.encode(msg, "UTF-8")
-                    + "&userid=" + URLEncoder.encode(userName, "UTF-8");
-            request.setPayload(body.getBytes("UTF-8"));
-
-            final HTTPResponse response = URL_FETCH_SVC.fetch(request);
-            final JSONObject data = new JSONObject(new String(response.getContent(), "UTF-8"));
+            final HttpResponse response = HttpRequest.post(TURING_API).
+                    form("key", TURING_KEY).
+                    form("info", msg).
+                    form("userid", userName).connectionTimeout(5000).timeout(5000).send();
+            response.charset("UTF-8");
+            final JSONObject data = new JSONObject(response.bodyText());
             final int code = data.optInt("code");
 
             switch (code) {
