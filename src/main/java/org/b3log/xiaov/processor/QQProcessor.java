@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2018, b3log.org & hacpai.com
+ * Copyright (c) 2012-2019, b3log.org & hacpai.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Logger;
-import org.b3log.latke.servlet.HTTPRequestContext;
-import org.b3log.latke.servlet.HTTPRequestMethod;
+import org.b3log.latke.servlet.HttpMethod;
+import org.b3log.latke.servlet.RequestContext;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.xiaov.service.QQService;
 import org.b3log.xiaov.util.XiaoVs;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -37,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ul>
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.2.5, Oct 25, 2018
+ * @version 1.0.2.6, Jan 2, 2019
  * @since 1.0.0
  */
 @RequestProcessor
@@ -57,24 +56,21 @@ public class QQProcessor {
     /**
      * Handles QQ message.
      *
-     * @param context  the specified context
-     * @param request  the specified request
-     * @param response the specified response
-     * @throws Exception exception
+     * @param context the specified context
      */
-    @RequestProcessing(value = "/qq", method = HTTPRequestMethod.POST)
-    public void qq(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+    @RequestProcessing(value = "/qq", method = HttpMethod.POST)
+    public void qq(final RequestContext context) {
         final String key = XiaoVs.getString("qq.bot.key");
-        if (!key.equals(request.getParameter("key"))) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        if (!key.equals(context.param("key"))) {
+            context.sendError(HttpServletResponse.SC_FORBIDDEN);
 
             return;
         }
 
-        String msg = request.getParameter("msg");
+        String msg = context.param("msg");
         if (StringUtils.isBlank(msg)) {
             LOGGER.warn("Empty msg body");
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            context.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
             return;
         }

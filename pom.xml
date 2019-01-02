@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Description: XiaoV POM.
-    Version: 1.1.0.16, Oct 25, 2018
+    Version: 1.1.0.17, Jan 2, 2019
     Author: Liang Ding
 -->
 <project
@@ -20,7 +20,7 @@
 
     <!-- Properties -->
     <properties>
-        <latke.version>2.4.29</latke.version>
+        <latke.version>2.4.41</latke.version>
         <servlet.version>3.1.0</servlet.version>
         <jetty.version>9.2.7.v20150116</jetty.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -73,7 +73,7 @@
     <dependencies>
         <dependency>
             <groupId>org.b3log</groupId>
-            <artifactId>latke</artifactId>
+            <artifactId>latke-core</artifactId>
             <version>${latke.version}</version>
             <exclusions>
                 <exclusion>
@@ -187,52 +187,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
-            <!--
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>${maven-license-plugin.version}</version>
-                <configuration>
-                    <basedir>${basedir}</basedir>
-                    <header>src/main/resources/etc/header.txt</header>
-                    <quiet>false</quiet>
-                    <failIfMissing>true</failIfMissing>
-                    <aggregate>true</aggregate>
-                    <strictCheck>true</strictCheck>
-                    <includes>
-                        <include>**/src/*/java/**/*.java</include>
-                        <include>**/src/*/webapp/js/*.js</include>
-                        <include>**/src/*/webapp/css/*.css</include>
-                        <include>**/src/*/resources/*.properties</include>
-                        <include>**/src/*/webapp/WEB-INF/*.xml</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/src/main/java/**/package-info.java</exclude>
-                        <exclude>**/src/main/java/com/**/*.java</exclude>
-                        <exclude>**/src/*/webapp/js/lib/*.js</exclude>
-                    </excludes>
-                    <useDefaultExcludes>true</useDefaultExcludes>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                    <useDefaultMapping>true</useDefaultMapping>
-                    <properties>
-                        <year>2012-2018</year>
-                        <devTeam>b3log.org &amp; hacpai.com</devTeam>
-                    </properties>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
 
         <finalName>xiaov</finalName>
