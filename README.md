@@ -1,3 +1,5 @@
+**由于 Smart QQ 从 2019 年 1 月 1 日起停止服务，所以该项目也已经停止维护了！**
+
 # [XiaoV](https://github.com/b3log/xiaov) [![Build Status](https://img.shields.io/travis/b3log/xiaov.svg?style=flat)](https://travis-ci.org/b3log/xiaov)
 
 ## 简介
